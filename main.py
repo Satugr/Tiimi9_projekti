@@ -44,6 +44,9 @@ encrypted_passwords = []
 websites = []
 usernames = []
 
+#Salausarvo
+ENCRYPTION_SHIFT = 3
+
 # Function to add a new password 
 def add_password():
     """
@@ -56,6 +59,16 @@ def add_password():
         None
     """
 
+print()
+print("Lisää uusi salasana")
+
+#1.Syötteet käyttäjältä
+verkkosivu = input("Verkkosivun nimi: ")
+käyttäjänimi = input("Käyttäjätunnus: ")
+salasana = input("Salasana: ")
+
+#2. Salasanan salaus
+encrypted_pwd = caesar_encrypt(password, ENCRYPTION_SHIFT)
 # Function to retrieve a password 
 def get_password():
     """
