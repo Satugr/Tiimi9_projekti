@@ -26,10 +26,11 @@ def caesar_decrypt(text, shift):
 # Password strength checker function (optional)
 def is_strong_password(password):
     # ...
-
+    pass
 # Password generator function (optional)
 def generate_password(length):
      """
+    pass
     Generate a random strong password of the specified length.
 
     Args:
@@ -122,37 +123,33 @@ def save_passwords():
         None
     """
 
-    Returns:
-        None
-    """
-    print("\nTallennetaan salasanaholvi tiedostoon")
 
     #1. Kootaan listat sanakirjaksi
-    data = {
-        "verkkosivut": verkkosivut,
-        "kayttajanimet": käyttäjänimet,
-        "salatut_salasanat": salatut_salasanat
-        }
+data = {
+    "verkkosivut": verkkosivut,
+    "kayttajanimet": käyttäjänimet,
+    "salatut_salasanat": salatut_salasanat
+    }
 
-    tiedostonimi="salasanaholvi.json"
+tiedostonimi="salasanaholvi.json"
 
-    try:
-        #2.Avataan tiedosto kirjoitusta varten
-        with open(tiedostonimi, 'w', encoding='utf-8') as tiedosto:
-            #3. Kirjoitetaan tiedot tiedostoon
-            json.dump(data, tiedosto, indent=4)
+try:
+    #2.Avataan tiedosto kirjoitusta varten
+    with open(tiedostonimi, 'w', encoding='utf-8') as tiedosto:
+        #3. Kirjoitetaan tiedot tiedostoon
+        json.dump(data, tiedosto, indent=4)
 
-        #4. Onnistunut tulos kerrotaan käyttäjälle
-        print(f"\nSalasanaholvi tallennettu pysyvästi (tiedostoon '{tiedostonimi}').")
+    #4. Onnistunut tulos kerrotaan käyttäjälle
+    print(f"\nSalasanaholvi tallennettu pysyvästi (tiedostoon '{tiedostonimi}').")
 
-    except Exception as e:
-        #5.Ilm oitetaan jos tapahtui virhe
-    print(f"\nTallennusvirhe! Tietojen kirjoittaminen tiedostoon epäonnistui: {e}"))
+except Exception as e:
+    #5.Ilm oitetaan jos tapahtui virhe
+    print(f"\nTallennusvirhe! Tietojen kirjoittaminen tiedostoon epäonnistui: {e}")
 
 
 # Function to load passwords from a JSON file 
 def load_passwords():
-     """
+    """
     Load passwords from a file into the password vault.
 
     This function should load passwords, websites, and usernames from a text
@@ -160,7 +157,8 @@ def load_passwords():
 
     Returns:
         None
-    
+    """
+
     global salatut_salasanat, verkkosivut, käyttäjänimet
     tiedostonimi = "salasanaholvi.json"
 
