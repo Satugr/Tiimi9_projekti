@@ -40,14 +40,14 @@ def generate_password(length):
     """
 
 # Initialize empty lists to store encrypted passwords, websites, and usernames
-encrypted_passwords = []
-websites = []
-usernames = []
+salatut_salasanat = []
+verkkosivut = []
+käyttäjänimet = []
 
 #Salausarvo
-ENCRYPTION_SHIFT = 3
+SALAUS_SIIRTO = 3
 
-# Function to add a new password 
+# Function to add a new password OK
 def add_password():
     """
     Add a new password to the password manager.
@@ -59,17 +59,25 @@ def add_password():
         None
     """
 
-print()
-print("Lisää uusi salasana")
 
-#1.Syötteet käyttäjältä
-verkkosivu = input("Verkkosivun nimi: ")
-käyttäjänimi = input("Käyttäjätunnus: ")
-salasana = input("Salasana: ")
+    print("\nLisää uusi salasana")
 
-#2. Salasanan salaus
-encrypted_pwd = caesar_encrypt(password, ENCRYPTION_SHIFT)
-# Function to retrieve a password 
+    #1.Kysytään syötteet käyttäjältä
+    verkkosivu_syote = input("Verkkosivun nimi: ")
+    käyttäjänimi_syote = input("Käyttäjätunnus: ")
+    salasana_syote = input("Salasana: ")
+
+    #2. Salasanan salaus
+    salattu_salasana = caesar_encrypt(salasana_syote, SALAUS_SIIRTO)
+
+    #3. Tallennus listoihin
+    verkkosivut.append(verkkosivu_syote)
+    käyttäjänimet.append(käyttäjänimi_syote)
+    salatut_salasanat.append(salattu_salasana)
+
+    print(f"\nTiedot tallennettu onnistuneesti verkkosivulle: {verkkosivu_syote}")
+
+# Function to retrieve a password OK
 def get_password():
     """
     Retrieve a password for a given website.
@@ -80,8 +88,29 @@ def get_password():
     Returns:
         None
     """
+    print("\n Hae salasana")
+    haettava_sivu=input("Anna sen verkkosivun nimi, jonka salasanan haluat hakea: ")
 
-# Function to save passwords to a JSON file 
+    try:
+        #1.Etsi syötetyn verkkosivun indeksi verkkosivut-listalta
+        indeksi=verkkosivut.index(haettava_sivu)
+
+        #2. Hae tiedot käyttäjänimet ja salasanat -listoilta
+        haettu_käyttäjänimi=käyttäjänimet[indeksi]
+        salattu_salasana=salatut_salasanat[indeksi]
+
+        #3. Pura salaus
+        purettu_salasana=caesar_decrypt(salattu_salasana, SALAUS_SIIRTO)
+
+        print(f"\nTiedot löytyivät sivulle {haettava_sivu}")
+        print(f"Käyttäjänimi: {haettu_käyttäjänimi}")
+        print(f"Salasana: {purettu_salasana}")
+
+    except ValueError: 
+        # Käsittelee ja kertoo jos sivua ei löydy
+        print(f"\nVirhe: Salasanatietoja sivulle '{haettava_sivu}' ei löytynyt.")
+
+# Function to save passwords to a JSON file OK
 def save_passwords():
  """
     Save the password vault to a file.
@@ -96,6 +125,30 @@ def save_passwords():
     Returns:
         None
     """
+    print("\nTallennetaan salasanaholvi tiedostoon")
+
+    #1. Kootaan listat sanakirjaksi
+    data = {
+        "verkkosivut": verkkosivut,
+        "kayttajanimet": käyttäjänimet,
+        "salatut_salasanat": salatut_salasanat
+        }
+
+    tiedostonimi="salasanaholvi.json"
+
+    try:
+        #2.Avataan tiedosto kirjoitusta varten
+        with open(tiedostonimi, 'w', encoding='utf-8') as tiedosto:
+            #3. Kirjoitetaan tiedot tiedostoon
+            json.dump(data, tiedosto, indent=4)
+
+        #4. Onnistunut tulos kerrotaan käyttäjälle
+        print(f"\nSalasanaholvi tallennettu pysyvästi (tiedostoon '{tiedostonimi}').")
+
+    except Exception as e:
+        #5.Ilm oitetaan jos tapahtui virhe
+    print(f"\nTallennusvirhe! Tietojen kirjoittaminen tiedostoon epäonnistui: {e}"))
+
 
 # Function to load passwords from a JSON file 
 def load_passwords():
@@ -103,38 +156,66 @@ def load_passwords():
     Load passwords from a file into the password vault.
 
     This function should load passwords, websites, and usernames from a text
-    file named "vault.txt" (or a more generic name) and populate the respective lists.
+    file named "vault.txt" (salasanaholvi.json) (or a more generic name) and populate the respective lists.
 
     Returns:
         None
+    
+    global salatut_salasanat, verkkosivut, käyttäjänimet
+    tiedostonimi = "salasanaholvi.json"
+
+    try:
+        # 1. Avataan tiedosto lukemista varten ('r')
+        with open(tiedostonimi, 'r', encoding='utf-8') as tiedosto:
+            # 2. Ladataan tiedot sanakirjaksi
+            data = json.load(tiedosto)
+            
+        # 3. Tyhjennetään nykyiset listat
+        verkkosivut.clear()
+        käyttäjänimet.clear()
+        salatut_salasanat.clear()
+        
+        # 4. Lisätään ladatut tiedot listoihin
+        verkkosivut.extend(data.get("verkkosivut", []))
+        käyttäjänimet.extend(data.get("kayttajanimet", []))
+        salatut_salasanat.extend(data.get("salatut_salasanat", []))
+
+    except FileNotFoundError:
+        print(f"Tiedostoa '{tiedostonimi}' ei löytynyt.")
+        
+    except Exception as e:
+        print(f"Virhe ladattaessa tiedostoa '{tiedostonimi}': {e}")
+    
+    return None
 
   # Main method
+  
 def main():
 # implement user interface 
 
   while True:
-    print("\nPassword Manager Menu:")
-    print("1. Add Password")
-    print("2. Get Password")
-    print("3. Save Passwords")
-    print("4. Load Passwords")
-    print("5. Quit")
+    print("\nSalasananhallinta - valikko:")
+    print("1. Lisää salasana")
+    print("2. Hae salasana")
+    print("3. Tallenna salasanat tiedostoon")
+    print("4. Lataa salasanat tiedostosta")
+    print("5. Lopeta")
     
-    choice = input("Enter your choice: ")
+    valinta = input("Valitse toiminto (1-5): ")
     
-    if choice == "1":
+    if valinta == "1":
         add_password()
-    elif choice == "2":
+    elif valinta == "2":
         get_password()
-    elif choice == "3":
+    elif valinta == "3":
         save_passwords()
-    elif choice == "4":
+    elif valinta == "4":
         passwords = load_passwords()
-        print("Passwords loaded successfully!")
-    elif choice == "5":
+        print("Salasanat ladattu onnistuneesti!")
+    elif valinta == "5":
         break
     else:
-        print("Invalid choice. Please try again.")
+        print("Virheellinen valinta. Yritä uudestaan.")
 
 # Execute the main function when the program is run
 if __name__ == "__main__":
