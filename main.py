@@ -146,33 +146,24 @@ def save_passwords(passwords, file_path): #Muista oikeat parametrit!
 
 # Function to load passwords from a JSON file 
 def load_passwords(file_path):
-    """
-    Load passwords from a file into the password vault.
-
-    This function should load passwords, websites, and usernames from a text
-    file named "vault.txt" (salasanaholvi.json) (or a more generic name) and populate the respective lists.
-
-    Returns:
-        None
-    """
-
-    #Huom, tästä poistettiin edellisen version global listat, nyt try-f lataa ja palauttaa tiedot
-
-    try:#R=read
+    try:
         with open(file_path, 'r', encoding='utf-8') as tiedosto:
             data = json.load(tiedosto)
             
-        #Palautetaan ladattu lista suoraan
-        return data
+        # TARKISTUS: Jos ladattu data on lista, palauta se.
+        # Jos se on vanhaa sanakirjamuotoa, palauta tyhjä lista.
+        if isinstance(data, list):
+            return data
+        else:
+            print("Varoitus: Tiedosto oli vanhassa muodossa. Alustetaan uusi lista.")
+            return []
 
-    except FileNotFoundError:
-        print(f"Tiedostoa '{file_path}' ei löytynyt. Palautetaan tyhjä lista.")
-        return [] 
-        
-    except Exception as e: #e=virheen muuttuja
+    except (FileNotFoundError, json.JSONDecodeError):
+        # Jos tiedostoa ei ole tai se on viallinen, palautetaan tyhjä lista
+        return []
+    except Exception as e:
         print(f"Virhe ladattaessa tiedostoa: {e}")
-        return [] 
-        return data
+        return []
 
   # Main method
   
