@@ -1,5 +1,7 @@
-{
-    "verkkosivut": [],
-    "kayttajanimet": [],
-    "salatut_salasanat": []
-}
+[
+    {
+        "website": "alepa",
+        "username": "ostaja",
+        "password": "ostos123456"
+    }
+]

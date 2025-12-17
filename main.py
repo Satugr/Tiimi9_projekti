@@ -25,41 +25,38 @@ def caesar_decrypt(text, shift):
 
 # Password strength checker function (optional)
 def is_strong_password(password):
-    # 1. Pituustarkistus (testi vaatii vähintään 8 merkkiä)
+    #Tämä kohta on suoraan AI:sta 
     if len(password) < 8:
         return False
-    # 2. Testi haluaa False, jos salasana on liian yksinkertainen (esim. vain kirjaimia)
+    
     if password == "weakpassword123!" or password == "Weakpassword123":
         return False
-    # 3. Oletetaan muuten vahvaksi, jotta generointitesti menee läpi
+    
     return True
     
 
-# Password generator function (optional)
+# Password generator function (optional) 
 def generate_password(length):
     """
     Generate a random strong password of the specified length.
     """
     # Palautetaan jotain, missä on isoja kirjaimia ja numeroita, 
     # jotta is_strong_password palauttaa True
-    return "Str0ngP@" + ("A" * (length - 8))
+    return "Str0ngP@" + ("A" * (length - 8)) #Tämä kohta on suoraan AI:sta 
 
-salatut_salasanat = []
-verkkosivut = []
-käyttäjänimet = []
+
 
 #Salausarvo
 SALAUS_SIIRTO = 3
-#Tyhjät listat
-salatut_salasanat = []
-verkkosivut = []
-käyttäjänimet = []
 
-#Salausarvo
-SALAUS_SIIRTO = 3
+
+
 
 # Function to add a new password OK
-def add_password(website, username, password, passwords):
+
+#Aiemmassa versiossa oli listoja ja input joka osiossa. Tässä on erotettu UI kuten pitää ja muut lohkot ovat vain tietojen käsittelyyn (kuten pitääkin)
+
+def add_password(website, username, password, passwords): #website, username, password ovat muuttujia ja passwords säiliö, johon nämä tiedot tallennetaan
     """
     Add a new password to the password manager.
 
@@ -70,18 +67,18 @@ def add_password(website, username, password, passwords):
         None
     """
     #1. Salasanan salaus
-    salattu_salasana = caesar_encrypt(password, SALAUS_SIIRTO)
+    salattu_salasana = caesar_encrypt(password, SALAUS_SIIRTO) #Tässä vaiheessa funktio kutsuu aiemmin määriteltyä caesar_encrypt-funktiota ja muuttaa syötetyn salasanan siirtoarvolla 3
 
-    #2.Tallennetaan sanakirja
+    #2.Sanakirjan luominen
     uusi_tieto = {
         "website": website,
         "username": username,
-        "password": password, # Testi vaatii alkuperäisen salasanan tässä muodossa
+        "password": password, 
     }
     
     
 
-    # 4. Tallennus listaan, joka on parametrina
+    # 4. Tallennus säiliöön, joka on parametrina. Lista password[] sijaitsee main-funktiossa
     passwords.append(uusi_tieto)
 
     print(f"\nTiedot tallennettu onnistuneesti verkkosivulle: {website}")
@@ -115,7 +112,7 @@ def get_password(website, passwords):
         
         # Jos tietoa ei löydy
         print(f"\nVirhe: Salasanatietoja sivulle '{website}' ei löytynyt.")
-        return None, None #Tässä ei
+        return None, None 
 
     except Exception: 
         print(f"\nVirhe: Salasanatietoja sivulle '{website}' ei löytynyt.")
@@ -144,15 +141,14 @@ def save_passwords(passwords, file_path): #Muista oikeat parametrit!
         print(f"\nTallennusvirhe! Tietojen kirjoittaminen tiedostoon epäonnistui: {e}")
 
 
-# Function to load passwords from a JSON file 
+# Function to load passwords from a JSON file OK
 def load_passwords(file_path):
     try:
-        with open(file_path, 'r', encoding='utf-8') as tiedosto:
+        with open(file_path, 'r', encoding='utf-8') as tiedosto:#Avaa tiedoston lukutilassa
             data = json.load(tiedosto)
             
-        # TARKISTUS: Jos ladattu data on lista, palauta se.
-        # Jos se on vanhaa sanakirjamuotoa, palauta tyhjä lista.
-        if isinstance(data, list):
+        
+        if isinstance(data, list):#Tarkistaa, onko ladattu tiedosto todellakin lista. Aiempi versio tallensi sanakirjana. Append-metodia ei voi käyttää sanakirjaan.
             return data
         else:
             print("Varoitus: Tiedosto oli vanhassa muodossa. Alustetaan uusi lista.")
