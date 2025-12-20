@@ -54,7 +54,7 @@ class TestPasswordManager(unittest.TestCase):
         website = "example.net"
         username = "user456"
         password = "StrongP@ssw0rd"
-        add_password(website, username, password)
+        add_password(website, username, password, self.test_passwords)
 
         # Check if the added password is in the lists
         self.assertIn({"website": website, "username": username, "password": password}, self.test_passwords)
@@ -62,13 +62,13 @@ class TestPasswordManager(unittest.TestCase):
     def test_get_password(self):
         # Test retrieving an existing password
         website = "example.com"
-        username, password = get_password(website)
+        username, password = get_password(website, self.test_passwords)
         self.assertEqual(username, "user123")
         self.assertEqual(password, "P@ssw0rd")
 
         # Test retrieving a non-existent password
         website = "nonexistent.com"
-        username, password = get_password(website)
+        username, password = get_password(website, self.test_passwords)
         self.assertIsNone(username)
         self.assertIsNone(password)
 

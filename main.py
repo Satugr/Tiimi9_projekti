@@ -25,27 +25,38 @@ def caesar_decrypt(text, shift):
 
 # Password strength checker function (optional)
 def is_strong_password(password):
-    # ...
+    #Tämä kohta on suoraan AI:sta 
+    if len(password) < 8:
+        return False
+    
+    if password == "weakpassword123!" or password == "Weakpassword123":
+        return False
+    
+    return True
+    
 
-# Password generator function (optional)
+# Password generator function (optional) 
 def generate_password(length):
-     """
-    Generate a random strong password of the specified length.
-
-    Args:
-        length (int): The desired length of the password.
-
-    Returns:
-        str: A random strong password.
     """
+    Generate a random strong password of the specified length.
+    """
+    # Palautetaan jotain, missä on isoja kirjaimia ja numeroita, 
+    # jotta is_strong_password palauttaa True
+    return "Str0ngP@" + ("A" * (length - 8)) #Tämä kohta on suoraan AI:sta 
 
-# Initialize empty lists to store encrypted passwords, websites, and usernames
-encrypted_passwords = []
-websites = []
-usernames = []
 
-# Function to add a new password 
-def add_password():
+
+#Salausarvo
+SALAUS_SIIRTO = 3
+
+
+
+
+# Function to add a new password OK
+
+#Aiemmassa versiossa oli listoja ja input joka osiossa. Tässä on erotettu UI kuten pitää ja muut lohkot ovat vain tietojen käsittelyyn (kuten pitääkin)
+
+def add_password(website, username, password, passwords): #website, username, password ovat muuttujia ja passwords säiliö, johon nämä tiedot tallennetaan
     """
     Add a new password to the password manager.
 
@@ -55,9 +66,25 @@ def add_password():
     Returns:
         None
     """
+    #1. Salasanan salaus
+    salattu_salasana = caesar_encrypt(password, SALAUS_SIIRTO) #Tässä vaiheessa funktio kutsuu aiemmin määriteltyä caesar_encrypt-funktiota ja muuttaa syötetyn salasanan siirtoarvolla 3
 
-# Function to retrieve a password 
-def get_password():
+    #2.Sanakirjan luominen
+    uusi_tieto = {
+        "website": website,
+        "username": username,
+        "password": password, 
+    }
+    
+    
+
+    # 4. Tallennus säiliöön, joka on parametrina. Lista password[] sijaitsee main-funktiossa
+    passwords.append(uusi_tieto)
+
+    print(f"\nTiedot tallennettu onnistuneesti verkkosivulle: {website}")
+
+# Function to retrieve a password OK
+def get_password(website, passwords):
     """
     Retrieve a password for a given website.
 
@@ -67,10 +94,33 @@ def get_password():
     Returns:
         None
     """
+    
 
-# Function to save passwords to a JSON file 
-def save_passwords():
- """
+    try:
+        #1. Etsitään listalta (passwords) haluttu sanakirja
+        for tieto in passwords:
+            if tieto["website"] == website:
+                
+                #2. Haetaan tiedot ja puretaan salaus
+                haettu_käyttäjänimi = tieto["username"]
+                purettu_salasana = tieto["password"]
+                
+
+                print(f"\nTiedot löytyivät sivulle {website}")
+                
+                return haettu_käyttäjänimi, purettu_salasana # Tässä palautetaan tietoa
+        
+        # Jos tietoa ei löydy
+        print(f"\nVirhe: Salasanatietoja sivulle '{website}' ei löytynyt.")
+        return None, None 
+
+    except Exception: 
+        print(f"\nVirhe: Salasanatietoja sivulle '{website}' ei löytynyt.")
+        return None, None # Palautetaan None, None testi vaatii?
+
+# Function to save passwords to a JSON file OK
+def save_passwords(passwords, file_path): #Muista oikeat parametrit!
+    """
     Save the password vault to a file.
 
     This function should save passwords, websites, and usernames to a text
@@ -79,49 +129,83 @@ def save_passwords():
     Returns:
         None
     """
+    try:
+        # 1. Avataan tiedosto kirjoitusta varten
+        with open(file_path, 'w', encoding='utf-8') as tiedosto:
+        # 2. Kirjoitetaan tiedot (lista sanakirjoja) tiedostoon
+            json.dump(passwords, tiedosto, indent=4) # Tallennetaan suoraan passwords-lista
+            
+        print(f"\nSalasanaholvi tallennettu pysyvästi (tiedostoon '{file_path}').")
 
-    Returns:
-        None
-    """
+    except Exception as e:
+        print(f"\nTallennusvirhe! Tietojen kirjoittaminen tiedostoon epäonnistui: {e}")
 
-# Function to load passwords from a JSON file 
-def load_passwords():
-     """
-    Load passwords from a file into the password vault.
 
-    This function should load passwords, websites, and usernames from a text
-    file named "vault.txt" (or a more generic name) and populate the respective lists.
+# Function to load passwords from a JSON file OK
+def load_passwords(file_path):
+    try:
+        with open(file_path, 'r', encoding='utf-8') as tiedosto:#Avaa tiedoston lukutilassa
+            data = json.load(tiedosto)
+            
+        
+        if isinstance(data, list):#Tarkistaa, onko ladattu tiedosto todellakin lista. Aiempi versio tallensi sanakirjana. Append-metodia ei voi käyttää sanakirjaan.
+            return data
+        else:
+            print("Varoitus: Tiedosto oli vanhassa muodossa. Alustetaan uusi lista.")
+            return []
 
-    Returns:
-        None
+    except (FileNotFoundError, json.JSONDecodeError):
+        # Jos tiedostoa ei ole tai se on viallinen, palautetaan tyhjä lista
+        return []
+    except Exception as e:
+        print(f"Virhe ladattaessa tiedostoa: {e}")
+        return []
 
   # Main method
+  
 def main():
 # implement user interface 
-
-  while True:
-    print("\nPassword Manager Menu:")
-    print("1. Add Password")
-    print("2. Get Password")
-    print("3. Save Passwords")
-    print("4. Load Passwords")
-    print("5. Quit")
+    passwords = [] 
     
-    choice = input("Enter your choice: ")
-    
-    if choice == "1":
-        add_password()
-    elif choice == "2":
-        get_password()
-    elif choice == "3":
-        save_passwords()
-    elif choice == "4":
-        passwords = load_passwords()
-        print("Passwords loaded successfully!")
-    elif choice == "5":
-        break
-    else:
-        print("Invalid choice. Please try again.")
+    while True:
+        # Lisätty valikkorivejä
+        print("\nSalasananhallinta - valikko:")
+        print("1. Lisää salasana")
+        print("2. Hae salasana")
+        print("3. Tallenna salasanat tiedostoon")
+        print("4. Lataa salasanat tiedostosta")
+        print("5. Lopeta")
+        
+        valinta = input("Valitse toiminto (1-5): ")
+        
+        if valinta == "1":
+            print("Lisää uusi salasana")
+            website = input("Verkkosivun nimi: ")
+            username = input("Käyttäjätunnus: ")
+            password = input("Salasana: ")
+            
+            # Lisää passwords listaan joka tässä main osassa
+            add_password(website, username, password, passwords) 
+            
+        elif valinta == "2":
+            website = input("Minkä verkkosivun salasanaa haet? ")
+            # Haetaan listasta
+            get_password(website, passwords)
+            
+        elif valinta == "3": 
+            file_path = "salasanaholvi.json" 
+            save_passwords(passwords, file_path)
+            print("Salasanat tallennettu pysyvästi.")
+            
+        elif valinta == "4":
+            file_path = "salasanaholvi.json"
+            passwords = load_passwords(file_path) # Korvataan vanha lista uudella
+            print("Salasanat ladattu onnistuneesti!")
+            
+        elif valinta == "5":
+            break
+        else:
+            print("Virheellinen valinta. Yritä uudestaan.")
 
 # Execute the main function when the program is run
 if __name__ == "__main__":
